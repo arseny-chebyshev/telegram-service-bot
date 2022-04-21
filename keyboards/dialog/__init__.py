@@ -1,0 +1,8 @@
+from loader import registry
+from keyboards.dialog.admin_service_multiselect import add_service_dialog
+from keyboards.dialog.admin_master_multiselect import add_master_dialog
+from keyboards.dialog.user_service_select import user_service_dialog
+
+registry.register(add_service_dialog)
+registry.register(add_master_dialog)
+registry.register(user_service_dialog)
