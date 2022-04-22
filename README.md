@@ -13,24 +13,23 @@ Server</strong> sends updates to <strong>bot</strong> without constant polling,
 and the <strong>bot</strong> simply listens for updates), but it only seems sensible at production version 
 and at the stage of deployment.</p>
 <p>Uses SQLAlchemy and PostgreSQL Database for CRUD operations.</p>
-#Project files
+<p>Project files and folders:</p>
 <ul>
-  <li>requirements.txt: </li>
   <li>settings.py: creates credentials and parameters for the bot. Create a .env file with your credentials
-      and then pass them into this file.</li>
+      and then pass them into settings.py.</li>
   <li>migrate.py : creates (or recreates if already exists) Database Tables. Be careful since it may 
       completely erase data!</li>
-  <li>loader.py: creates a bot instance and its environment (like dispatcher, database cursor, in-memory storage)
-      dialogs registry, filters and middlewares.</li>
-  <li>bot.py: this file is the main file that initiates on-line connection to Telegram Servers, i.e. bot 
+  <li>loader.py: creates a bot instance and its environment (like dispatcher, database cursor and session entities, in-memory storage,
+      dialogs registry, filters and middlewares).</li>
+  <li>bot.py: main file that initiates online connection to Telegram Servers, i.e. bot 
       is <strong>live!</strong></li>
 </ul>
 <ul>
-  <li>filters: here you can create custom filters for incoming messages. Use filters as function decorator</li>
-  <li>handlers: here you can create commands and functional words/scenarios for the bot</li>
+  <li>filters: here you can create custom filters for incoming messages. Use filters as function decorator.</li>
+  <li>handlers: here you can create commands and functional words/scenarios for the bot.</li>
   <li>keyboards: inline, menu (bottomed at dialog), dialog (dynamic keyboard). 
-      Often used as user's shortcut for command</li>
-  <li>middlewares: middlewares over requests and messages</li>
-  <li>models: ORM tables for the database. Created with SQLAlchemy</li>
-  <li>states: used to set in-memory state for the user and temporarily store data about user's messages</li>
+      Often used as user's shortcut for command.</li>
+  <li>middlewares: middlewares over requests and messages.</li>
+  <li>models: ORM tables for the database. Created with SQLAlchemy.</li>
+  <li>states: used to set in-memory state for the user and temporarily store data about user.</li>
 </ul>
