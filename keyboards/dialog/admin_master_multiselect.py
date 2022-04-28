@@ -15,12 +15,11 @@ class MasterMultiselect(StatesGroup):
     inserting_service = State()
 
 
-async def get_services_all(**kwargs):
+async def get_masters_all(**kwargs):
     async with db_session() as session:
         result = await session.execute(select(Master))
-        masters = [res for res in result.scalars()]
         await session.commit()
-    master_list = [(master, master.master_id) for master in masters]
+    master_list = [(master, master.master_id) for master in result.scalars()]
     return {"masters": master_list}
 
 
@@ -31,10 +30,11 @@ async def add_masters_to_service(c: CallbackQuery, b: Button, d: DialogManager):
     service = Service(service_name=f"{dialog_data['service']}", price=f"{dialog_data['price']}")
     async with db_session() as session:
         session.add(service)
-        await session.flush()
-        for _ in dialog_data['masters']:
-            await session.execute(service_master_table.insert().
-                                  values(master=int(_), service=service.service_id))
+        await session.flush()  # flush to create service object with id and other entities
+        service_master_objects = [{'master': int(_), 'service': service.service_id}
+                                  for _ in dialog_data['masters']]
+        await session.execute(service_master_table.insert().
+                              values(service_master_objects))
         await session.commit()
     await c.message.delete()
     await c.message.answer(text=f"Masters added to service. Thank you!")
@@ -55,5 +55,5 @@ add_master_dialog = Dialog(Window(Const('Choose masters:'),
                                   Button(Const("Cancel"),
                                          id='cancel',
                                          on_click=cancel),
-                           getter=get_services_all,
+                           getter=get_masters_all,
                            state=MasterMultiselect.inserting_service))

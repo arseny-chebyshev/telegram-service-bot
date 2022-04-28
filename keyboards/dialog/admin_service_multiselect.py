@@ -17,23 +17,24 @@ class ServiceMultiselect(StatesGroup):
 async def get_services_all(**kwargs):
     async with db_session() as session:
         result = await session.execute(select(Service))
-        services = [res for res in result.scalars()]
         await session.commit()
-    service_list = [(service, service.service_id) for service in services]
+    service_list = [(service, service.service_id) for service in result.scalars()]
     return {"services": service_list}
 
 
 async def add_services_to_master(c: CallbackQuery, b: Button, d: DialogManager):
+    await c.answer("here we go")
     services = d.data['aiogd_context'].widget_data['m_services']
     await d.data['state'].update_data({'services': services})
     dialog_data = await d.data['state'].get_data()
     master = Master(master_name=f"{dialog_data['master']}")
     async with db_session() as session:
         session.add(master)
-        await session.flush()
-        for _ in dialog_data['services']:
-            await session.execute(service_master_table.insert().
-                                  values(service=int(_), master=master.master_id))
+        await session.flush()  # flush to create master object with id and other entities
+        service_master_objects = [{'service': int(_), 'master': master.master_id}
+                                  for _ in dialog_data['services']]
+        await session.execute(service_master_table.insert().
+                              values(service_master_objects))
         await session.commit()
     await c.message.delete()
     await c.message.answer(text=f"Services added to master. Thank you!")
