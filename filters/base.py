@@ -1,5 +1,9 @@
+import datetime
+
 from aiogram.dispatcher.filters import BoundFilter
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
+from aiogram_dialog import DialogManager
+from aiogram_dialog.widgets.kbd import Button
 
 
 class AdminFilter(BoundFilter):
@@ -15,3 +19,12 @@ class AdminFilter(BoundFilter):
         else:
             await msg.answer("No admin rights to do that. Sorry!")
             return False
+
+
+def is_date_valid(async_func):
+    async def wrapper(c: CallbackQuery, widget, d: DialogManager, widget_date: datetime.date):
+        if widget_date >= datetime.date.today():
+            await async_func(c, widget, d, widget_date)
+        else:
+            await c.answer("Please select a future date")
+    return wrapper

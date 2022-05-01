@@ -1,24 +1,18 @@
-import datetime
 import operator
 from datetime import date
 from loader import db_session
+from filters.base import is_date_valid
+from filters.user_dialog import is_service_selected
 from aiogram.types import CallbackQuery
-from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram_dialog import Window, Dialog, DialogManager
 from aiogram_dialog.widgets.kbd import Radio, Button, Group, Calendar
 from aiogram_dialog.widgets.text import Format, Const
 from sqlalchemy import select, insert, text
 from sqlalchemy.dialects.postgresql import VARCHAR
+from states.user import ServiceDialog
 from models.table_models import Service, Master, Schedule, service_master_table, schedule_master_table
 from .admin_service_multiselect import get_services_all
 from .actions import cancel
-
-
-class ServiceDialog(StatesGroup):
-    select_service = State()
-    select_master = State()
-    select_schedule = State()
-    select_hour = State()
 
 
 async def get_master_for_service(**kwargs) -> dict:
@@ -38,7 +32,7 @@ async def get_master_for_service(**kwargs) -> dict:
     return {"masters": master_list}
 
 
-async def get_schedule_for_master(**kwargs) -> dict:
+async def get_schedule_for_service(**kwargs) -> dict:
     pass
 
 
@@ -53,20 +47,20 @@ async def get_hour_for_date(**kwargs):
     return {"hours": hour_list}
 
 
+@is_service_selected
 async def select_master_for_service(c: CallbackQuery, b: Button, d: DialogManager) -> None:
     await d.switch_to(ServiceDialog.select_master)
 
 
+@is_service_selected
 async def select_schedule_for_service(c: CallbackQuery, b: Button, d: DialogManager):
     await d.switch_to(ServiceDialog.select_schedule)
 
 
+@is_date_valid
 async def select_hour_for_schedule(c: CallbackQuery, widget, d: DialogManager, widget_date: date):
-    if widget_date < datetime.date.today():
-        await c.answer("Please select a future date")
-    else:
-        d.data['aiogd_context'].widget_data['schedule_date'] = widget_date
-        await d.switch_to(ServiceDialog.select_hour)
+    d.data['aiogd_context'].widget_data['schedule_date'] = widget_date
+    await d.switch_to(ServiceDialog.select_hour)
 
 
 service_radio_keyboard = Window(Const('Choose service:'),
@@ -93,7 +87,8 @@ master_radio_keyboard = Window(Const('Choose master:'),
                                      width=2),
                                Button(Const("Search for schedule"),
                                       id='search_schedule',
-                                      on_click=select_schedule_for_service),
+                                      on_click=select_schedule_for_service,
+                                      ),
                                Button(Const("Cancel"), id='cancel', on_click=cancel),
                                getter=get_master_for_service,
                                state=ServiceDialog.select_master)

@@ -1,25 +1,12 @@
 import operator
 from loader import db_session
 from aiogram.types import CallbackQuery
-from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram_dialog import Window, Dialog, DialogManager
 from aiogram_dialog.widgets.kbd import Multiselect, Button, Group
 from aiogram_dialog.widgets.text import Format, Const
-from sqlalchemy import select, insert
-from models.table_models import Service, Master, service_master_table
-from .actions import cancel
-
-
-class ServiceMultiselect(StatesGroup):
-    inserting_master = State()
-
-
-async def get_services_all(**kwargs):
-    async with db_session() as session:
-        result = await session.execute(select(Service))
-        await session.commit()
-    service_list = [(service, service.service_id) for service in result.scalars()]
-    return {"services": service_list}
+from models.table_models import Master, service_master_table
+from states.admin import ServiceMultiselect
+from .actions import cancel, get_services_all
 
 
 async def add_services_to_master(c: CallbackQuery, b: Button, d: DialogManager):
