@@ -10,7 +10,6 @@ from .actions import cancel, get_services_all
 
 
 async def add_services_to_master(c: CallbackQuery, b: Button, d: DialogManager):
-    await c.answer("here we go")
     services = d.data['aiogd_context'].widget_data['m_services']
     await d.data['state'].update_data({'services': services})
     dialog_data = await d.data['state'].get_data()

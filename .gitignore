@@ -1,5 +1,8 @@
 venv
+tests
 __pycache__
 *.pyc
 .env
 .idea
+.pytest_cache
+dkd.py

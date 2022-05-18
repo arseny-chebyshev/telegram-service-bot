@@ -6,3 +6,7 @@ class ServiceDialog(StatesGroup):
     select_master = State()
     select_schedule = State()
     select_hour = State()
+
+
+class RegisterUser(StatesGroup):
+    send_contact = State()

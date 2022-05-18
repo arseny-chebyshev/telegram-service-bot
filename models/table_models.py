@@ -7,12 +7,12 @@ Base = declarative_base()
 
 # joining tables
 service_master_table = Table('service_master', Base.metadata,
-                             Column('service', ForeignKey("service.service_id")),
-                             Column('master', ForeignKey("master.master_id")))
+                             Column('service', ForeignKey("service.service_id", ondelete="CASCADE")),
+                             Column('master', ForeignKey("master.master_id",  ondelete="CASCADE")))
 
 schedule_master_table = Table('schedule_master', Base.metadata,
-                              Column('time', ForeignKey("schedule.schedule_id")),
-                              Column('master', ForeignKey("master.master_id")),
+                              Column('time', ForeignKey("schedule.schedule_id",  ondelete="CASCADE")),
+                              Column('master', ForeignKey("master.master_id",  ondelete="CASCADE")),
                               Column('is_free', pg_type.BOOLEAN(), default=True))
 
 
@@ -20,7 +20,7 @@ class Service(Base):
     __tablename__ = "service"
     service_id = Column(pg_type.INTEGER(), primary_key=True)
     service_name = Column(pg_type.VARCHAR(length=64), nullable=False)
-    price = Column(pg_type.MONEY(), nullable=False)
+    service_price = Column(pg_type.MONEY(), nullable=False)
     service_master = relationship("Master", secondary=service_master_table)
     service_order = relationship("Order")
 
@@ -52,7 +52,7 @@ class Client(Base):
 class Order(Base):
     __tablename__ = 'order'
     order_id = Column(pg_type.INTEGER(), primary_key=True)
-    order_service = Column(pg_type.INTEGER(), ForeignKey('service.service_id'))
-    order_client = Column(pg_type.INTEGER(), ForeignKey('client.client_id'))
-    order_master = Column(pg_type.INTEGER(), ForeignKey('master.master_id'))
-    order_time = Column(pg_type.INTEGER(), ForeignKey('schedule.schedule_id'))
+    order_service = Column(pg_type.INTEGER(), ForeignKey('service.service_id',  ondelete="CASCADE"))
+    order_client = Column(pg_type.INTEGER(), ForeignKey('client.client_id',  ondelete="CASCADE"))
+    order_master = Column(pg_type.INTEGER(), ForeignKey('master.master_id',  ondelete="CASCADE"))
+    order_time = Column(pg_type.INTEGER(), ForeignKey('schedule.schedule_id',  ondelete="CASCADE"))

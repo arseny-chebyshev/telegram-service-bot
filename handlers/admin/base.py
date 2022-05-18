@@ -6,7 +6,7 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Command, Text
 
 from states.admin import AdminStates
-from keyboards.menu.menu_keyboard import admin_menu
+from keyboards.menu.kbds import admin_menu
 
 
 async def send_to_admin(dispatcher):

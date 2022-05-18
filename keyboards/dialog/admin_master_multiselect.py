@@ -13,7 +13,7 @@ async def add_masters_to_service(c: CallbackQuery, b: Button, d: DialogManager):
     masters = d.data['aiogd_context'].widget_data['m_masters']
     await d.data['state'].update_data({'masters': masters})
     dialog_data = await d.data['state'].get_data()
-    service = Service(service_name=f"{dialog_data['service']}", price=f"{dialog_data['price']}")
+    service = Service(service_name=f"{dialog_data['service']}", service_price=f"{dialog_data['price']}")
     async with db_session() as session:
         session.add(service)
         await session.flush()  # flush to create service object with id and other entities

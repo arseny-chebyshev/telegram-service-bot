@@ -2,7 +2,7 @@ from loader import dp
 from aiogram.dispatcher.filters import Command
 from aiogram.types import Message, ReplyKeyboardRemove
 
-from keyboards.menu.menu_keyboard import base_menu
+from keyboards.menu.kbds import base_menu
 
 
 @dp.message_handler(Command('start'))
@@ -16,7 +16,4 @@ Use /help to see available commands.""",
 @dp.message_handler(Command('help'))
 async def show_help(msg: Message):
     await msg.answer("""/admin - use Admin Interface
-/fsm - use test Finite State Machine
-/menu - use test Keyboard Menu
-/items - use test Inline Callback menu 
 /service - sign up for a Service""", reply_markup=ReplyKeyboardRemove())
