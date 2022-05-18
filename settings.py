@@ -9,6 +9,4 @@ peach_url = os.getenv('PEACH')
 db_address = os.getenv('DB_ADDRESS')
 pg_user = os.getenv('PG_USER')
 pg_pass = os.getenv('PG_PASS')
-dikidi_user = os.getenv('DIKIDI_USER')
-dikidi_pass = os.getenv('DIKIDI_PASS')
-dikidi_org = os.getenv('DIKIDI_ORG')
+
